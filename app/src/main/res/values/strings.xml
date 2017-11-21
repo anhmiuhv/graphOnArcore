@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Virtual Grapher</string>
+    <string name="next">Next</string>
+    <string name="x_axis">X Axis</string>
+    <string name="y_axis">Y Axis</string>
+    <string name="z_axis">Z Axis</string>
+    <string name="title">Title</string>
+    <string name="units">Units</string>
 </resources>

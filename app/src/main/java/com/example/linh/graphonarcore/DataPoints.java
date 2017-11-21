@@ -16,6 +16,20 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
 public class DataPoints extends AppCompatActivity {
 
     private Button addButton;
@@ -31,6 +45,10 @@ public class DataPoints extends AppCompatActivity {
     private TextInputEditText zPoint;
     private TableLayout table;
 
+    private ArrayList<Float> xArray, yArray, zArray;
+    private String XAxisTitle, YAxisTitle, ZAxisTitle;
+    private String XUnit, YUnit, ZUnit;
+    JSONObject json;
     private int rowCounter;
 
     View.OnClickListener deleteButtonListener = new View.OnClickListener() {
@@ -54,6 +72,10 @@ public class DataPoints extends AppCompatActivity {
     yPoint = findViewById(R.id.yPoint);
     zPoint = findViewById(R.id.zPoint);
     table = findViewById(R.id.table);
+    xArray = new ArrayList<>();
+    yArray = new ArrayList<>();
+    zArray = new ArrayList<>();
+    json = new JSONObject();
     rowCounter = 1;
 
     }
@@ -72,6 +94,14 @@ public class DataPoints extends AppCompatActivity {
         String str2 = extras.getString("Y_TITLE").equals("") ? "Y Axis" : extras.getString("Y_TITLE");
         String str3 = extras.getString("Z_TITLE").equals("") ? "Z Axis" : extras.getString("Z_TITLE");
 
+        XAxisTitle = str1;
+        YAxisTitle = str2;
+        ZAxisTitle = str3;
+
+        XUnit = extras.getString("X_UNIT");
+        YUnit = extras.getString("Y_UNIT");
+        ZUnit = extras.getString("Z_UNIT");
+
         XTitle.setText(str1);
         YTitle.setText(str2);
         ZTitle.setText(str3);
@@ -89,8 +119,6 @@ public class DataPoints extends AppCompatActivity {
                 } else if (isNumericEditText(zLayout, "Enter a valid number")) {
 
                 } else {
-
-                    Log.e("BANANA", "Else statement");
 
                     TableRow row = new TableRow(DataPoints.this);
 
@@ -137,13 +165,103 @@ public class DataPoints extends AppCompatActivity {
             }
         });
 
-        //TODO: where should the user data be sent
         graphButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 //turn your table points into a CSV
                 //or send data elsewhere, who knows?
+
+                for(int i = 1; i < table.getChildCount(); i++) {
+                    View v = table.getChildAt(i);
+                    if (v instanceof TableRow) {
+
+                        TableRow row = (TableRow) v;
+
+                        for(int j = 0; j < 3; j++){
+
+                            TextView point = (TextView) row.getChildAt(j); // get child index on particular row
+                            String text = point.getText().toString();
+
+                            if (j == 0) {
+                                xArray.add(Float.parseFloat(text));
+                            } else if (j == 1) {
+                                yArray.add(Float.parseFloat(text));
+                            } else {
+                                zArray.add(Float.parseFloat(text));
+                            }
+                        }
+                    }
+                }
+
+                JSONObject title = new JSONObject();
+                JSONObject unit = new JSONObject();
+
+                try {
+
+                    title.put("x", XAxisTitle);
+                    title.put("y", YAxisTitle);
+                    title.put("z", ZAxisTitle);
+
+                    unit.put("x", XUnit);
+                    unit.put("y", YUnit);
+                    unit.put("z", ZUnit);
+
+                    JSONArray points = new JSONArray();
+
+                    for(int i = 0; i < xArray.size(); i++) {
+
+                    JSONObject point = new JSONObject();
+
+                    point.put("x", xArray.get(i));
+                    point.put("y", yArray.get(i));
+                    point.put("z", zArray.get(i));
+
+                    points.put(point);
+
+                    }
+
+                    json.put("title", title);
+                    json.put("unit", unit);
+                    json.put("points", points);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                // Instantiate the RequestQueue.
+                RequestQueue queue = Volley.newRequestQueue(DataPoints.this);
+                String url ="http://argraph.herokuapp.com";
+
+                // Request a string response from the provided URL.
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+
+                    @Override
+                    public void onResponse(String response) {
+                        //TODO: get the url from server, start new activity with webView with given url
+                        Log.i("VOLLEY RESPONSE: ", response);
+                    }
+
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i("VOLLEY ERROR: ", error.getMessage());
+                    }
+
+                }) {
+
+                    @Override
+                    public byte[] getBody() throws AuthFailureError {
+
+                        String your_string_json = json.toString(); // put your json
+                        return your_string_json.getBytes();
+                    }
+                };
+
+                // Add the request to the RequestQueue.
+                queue.add(stringRequest);
+                queue.start();
 
             }
         });
