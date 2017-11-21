@@ -1,11 +1,16 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary0</item>
         <item name="colorPrimaryDark">@color/colorPrimary4</item>
         <item name="colorAccent">@color/colorSecondary0</item>
+    </style>
+
+    <style name="error_appearance" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/colorSecondary0</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
 </resources>
