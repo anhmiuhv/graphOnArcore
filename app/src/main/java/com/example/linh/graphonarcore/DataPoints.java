@@ -231,7 +231,7 @@ public class DataPoints extends AppCompatActivity {
 
                 // Instantiate the RequestQueue.
                 RequestQueue queue = Volley.newRequestQueue(DataPoints.this);
-                String url ="http://argraph.herokuapp.com";
+                String url ="http://argraph.herokuapp.com/api";
 
                 // Request a string response from the provided URL.
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
