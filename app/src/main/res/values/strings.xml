@@ -6,4 +6,8 @@
     <string name="z_axis">Z Axis</string>
     <string name="title">Title</string>
     <string name="units">Units</string>
+    <string name="permission_camera_rationale">well you are using an camera app</string>
+    <string name="ok">OK</string>
+    <string name="low_storage_error">low storage</string>
+    <string name="no_camera_permission">you use a cmera app but not grant camera permission?</string>
 </resources>

@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.linh.graphonarcore">
 
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -22,7 +23,8 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".DataPoints" />
+        <activity android:name=".DataPoints"></activity>
+        <activity android:name=".QRScanActivity" />
         <activity android:name=".Graph"></activity>
     </application>
 
