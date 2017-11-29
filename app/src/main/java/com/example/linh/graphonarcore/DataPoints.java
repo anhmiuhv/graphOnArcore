@@ -23,6 +23,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -256,15 +257,20 @@ public class DataPoints extends AppCompatActivity {
                 String url ="http://argraph.herokuapp.com/api";
 
                 // Request a string response from the provided URL.
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                JsonObjectRequest stringRequest = new JsonObjectRequest(url,json, new Response.Listener<JSONObject>() {
 
                     @Override
-                    public void onResponse(String response) {
-                        Log.i("VOLLEY RESPONSE: ", response);
+                    public void onResponse(JSONObject response) {
+                        Log.i("VOLLEY RESPONSE: ", response.toString());
 
                         Intent intent = new Intent(DataPoints.this, Graph.class);
-                        intent.putExtra("URL", response);
-                        startActivity(intent);
+                        try {
+                            intent.putExtra("URL", response.getString("url"));
+                            startActivity(intent);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
 
                 }, new Response.ErrorListener() {
@@ -284,7 +290,7 @@ public class DataPoints extends AppCompatActivity {
                 }) {
 
                     @Override
-                    public byte[] getBody() throws AuthFailureError {
+                    public byte[] getBody() {
 
                         String your_string_json = json.toString(); // put your json
                         Log.i("JSON your_string_json: ", your_string_json);
@@ -303,7 +309,8 @@ public class DataPoints extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                //TODO: QR code functionality
+                Intent intent = new Intent(DataPoints.this, QRScanActivity.class);
+                startActivity(intent);
 
             }
         });
