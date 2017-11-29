@@ -263,9 +263,8 @@ public class DataPoints extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         Log.i("VOLLEY RESPONSE: ", response.toString());
 
-                        Intent intent = new Intent(DataPoints.this, Graph.class);
                         try {
-                            intent.putExtra("URL", response.getString("url"));
+                            Intent intent = ArcoreIntentFactory.getIntent(DataPoints.this, response.getString("url"));
                             startActivity(intent);
 
                         } catch (JSONException e) {
@@ -277,6 +276,7 @@ public class DataPoints extends AppCompatActivity {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        if (error.getMessage() == null) return;
                         Log.i("VOLLEY ERROR: ", error.getMessage());
 
                         Context context = getApplicationContext();

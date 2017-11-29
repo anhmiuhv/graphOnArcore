@@ -26,6 +26,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.linh.graphonarcore.camera.BarcodeGraphic;
+import com.example.linh.graphonarcore.camera.BarcodeGraphicTracker;
 import com.example.linh.graphonarcore.camera.BarcodeTrackerFactory;
 import com.example.linh.graphonarcore.camera.CameraSource;
 import com.example.linh.graphonarcore.camera.CameraSourcePreview;
@@ -39,7 +40,7 @@ import com.google.android.gms.vision.barcode.BarcodeDetector;
 
 import java.io.IOException;
 
-public class QRScanActivity extends AppCompatActivity {
+public class QRScanActivity extends AppCompatActivity implements BarcodeGraphicTracker.BarcodeUpdateListener {
 
     private static final String TAG = "Barcode-reader";
 
@@ -71,7 +72,7 @@ public class QRScanActivity extends AppCompatActivity {
 
         int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
         if (rc == PackageManager.PERMISSION_GRANTED) {
-            createCameraSource(true, true);
+            createCameraSource(true, false);
         } else {
             requestCameraPermission();
         }
@@ -329,6 +330,12 @@ public class QRScanActivity extends AppCompatActivity {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onBarcodeDetected(Barcode barcode) {
+        Intent data = ArcoreIntentFactory.getIntent(this, barcode.rawValue);
+        startActivity(data);
     }
 
     private class CaptureGestureListener extends GestureDetector.SimpleOnGestureListener {

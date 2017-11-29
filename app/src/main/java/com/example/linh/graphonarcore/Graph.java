@@ -1,6 +1,8 @@
 package com.example.linh.graphonarcore;
 
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.webkit.WebView;
@@ -25,5 +27,9 @@ public class Graph extends AppCompatActivity {
         String url = intent.getStringExtra("URL");
 
         graphWebView.loadUrl(url);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE))
+            { WebView.setWebContentsDebuggingEnabled(true); }
+        }
     }
 }
