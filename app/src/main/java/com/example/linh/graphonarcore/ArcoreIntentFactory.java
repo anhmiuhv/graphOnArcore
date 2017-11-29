@@ -16,7 +16,7 @@ public class ArcoreIntentFactory {
                 return intent.setData(Uri.parse(url));
             }
         }
-        return null;
+        return new Intent(activity, Graph.class).putExtra("URL", url);
 
     }
 
