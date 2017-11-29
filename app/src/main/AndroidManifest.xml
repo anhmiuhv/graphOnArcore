@@ -22,7 +22,8 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".DataPoints"></activity>
+        <activity android:name=".DataPoints" />
+        <activity android:name=".Graph"></activity>
     </application>
 
 </manifest>

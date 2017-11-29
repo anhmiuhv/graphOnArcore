@@ -1,5 +1,6 @@
 package com.example.linh.graphonarcore;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.provider.ContactsContract;
@@ -15,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -52,6 +54,7 @@ public class DataPoints extends AppCompatActivity {
     JSONObject json;
     private int rowCounter;
 
+    //removes the table row that the delete button is in from the table layout
     View.OnClickListener deleteButtonListener = new View.OnClickListener() {
         public void onClick(View v) {
             table.removeView((TableRow)v.getParent());
@@ -59,6 +62,7 @@ public class DataPoints extends AppCompatActivity {
         }
     };
 
+    //initialize the variables
     private void init() {
 
     addButton = findViewById(R.id.addButton);
@@ -89,9 +93,11 @@ public class DataPoints extends AppCompatActivity {
 
         init();
 
+        //get main activity intent
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
 
+        //get the axis titles
         String str1 = extras.getString("X_TITLE").equals("") ? "X Axis" : extras.getString("X_TITLE");
         String str2 = extras.getString("Y_TITLE").equals("") ? "Y Axis" : extras.getString("Y_TITLE");
         String str3 = extras.getString("Z_TITLE").equals("") ? "Z Axis" : extras.getString("Z_TITLE");
@@ -100,6 +106,7 @@ public class DataPoints extends AppCompatActivity {
         YAxisTitle = str2;
         ZAxisTitle = str3;
 
+        //get the unit titles
         XUnit = extras.getString("X_UNIT");
         YUnit = extras.getString("Y_UNIT");
         ZUnit = extras.getString("Z_UNIT");
@@ -108,12 +115,15 @@ public class DataPoints extends AppCompatActivity {
         YTitle.setText(str2);
         ZTitle.setText(str3);
 
+        //get focus on x point
         xPoint.requestFocus();
 
+        //add point
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
+                //check if user entered a number
                 if (isNumericEditText(xLayout, "Enter a valid number")) {
 
                 } else if (isNumericEditText(yLayout, "Enter a valid number")) {
@@ -122,6 +132,7 @@ public class DataPoints extends AppCompatActivity {
 
                 } else {
 
+                    //create a new table row with the given data points
                     TableRow row = new TableRow(DataPoints.this);
 
                     TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(
@@ -129,38 +140,48 @@ public class DataPoints extends AppCompatActivity {
 
                     layoutParams.setMargins(20, 5, 50, 5);
 
+                    //create x point
                     TextView x = new TextView(DataPoints.this);
                     x.setText(xPoint.getText().toString());
                     x.setTextColor(ContextCompat.getColor(DataPoints.this, R.color.colorWhite));
                     x.setTextSize(18);
                     x.setLayoutParams(layoutParams);
+
+                    //create y point
                     TextView y = new TextView(DataPoints.this);
                     y.setText(yPoint.getText().toString());
                     y.setTextColor(ContextCompat.getColor(DataPoints.this, R.color.colorWhite));
                     y.setTextSize(18);
                     y.setLayoutParams(layoutParams);
+
+                    //create z point
                     TextView z = new TextView(DataPoints.this);
                     z.setText(zPoint.getText().toString());
                     z.setTextColor(ContextCompat.getColor(DataPoints.this, R.color.colorWhite));
                     z.setTextSize(18);
                     z.setLayoutParams(layoutParams);
 
+                    //create delete button
                     Button deleteButton = new Button(DataPoints.this);
                     deleteButton.setText("Delete");
                     deleteButton.setOnClickListener(deleteButtonListener);
 
+                    //add elements to the TableRow
                     row.addView(x);
                     row.addView(y);
                     row.addView(z);
                     row.addView(deleteButton);
 
+                    //add TableRow to the layout
                     table.addView(row, rowCounter, layoutParams);
                     rowCounter++;
 
+                    //clear the points
                     xPoint.getText().clear();
                     yPoint.getText().clear();
                     zPoint.getText().clear();
 
+                    //reset focus to x point
                     xPoint.requestFocus();
 
                 }
@@ -171,9 +192,7 @@ public class DataPoints extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                //turn your table points into a CSV
-                //or send data elsewhere, who knows?
-
+                //get the points from the table and add them to the arrays
                 for(int i = 1; i < table.getChildCount(); i++) {
                     View v = table.getChildAt(i);
                     if (v instanceof TableRow) {
@@ -196,6 +215,7 @@ public class DataPoints extends AppCompatActivity {
                     }
                 }
 
+                //create json for the three arrays
                 JSONObject title = new JSONObject();
                 JSONObject unit = new JSONObject();
 
@@ -228,7 +248,7 @@ public class DataPoints extends AppCompatActivity {
                     json.put("points", points);
 
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    Log.i("JSON ERROR: ", e.getMessage());
                 }
 
                 // Instantiate the RequestQueue.
@@ -242,6 +262,10 @@ public class DataPoints extends AppCompatActivity {
                     public void onResponse(String response) {
                         //TODO: get the url from server, start new activity with webView with given url
                         Log.i("VOLLEY RESPONSE: ", response);
+
+                        Intent intent = new Intent(DataPoints.this, Graph.class);
+                        intent.putExtra("URL", response);
+                        startActivity(intent);
                     }
 
                 }, new Response.ErrorListener() {
@@ -249,6 +273,13 @@ public class DataPoints extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.i("VOLLEY ERROR: ", error.getMessage());
+
+                        Context context = getApplicationContext();
+                        CharSequence text = error.getMessage();
+                        int duration = Toast.LENGTH_LONG;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.show();
                     }
 
                 }) {
@@ -278,8 +309,11 @@ public class DataPoints extends AppCompatActivity {
         });
     }
 
+    //checks to see if input is a valid number, accepts negatives and decimals
     public boolean isNumericEditText(TextInputLayout editLayout, String error) {
+
         String str = editLayout.getEditText().getText().toString();
+
         if (str.matches("-?\\d+(\\.\\d+)?")) {  //match a number with optional '-' and decimal.
             editLayout.setError(null);
             return false;
