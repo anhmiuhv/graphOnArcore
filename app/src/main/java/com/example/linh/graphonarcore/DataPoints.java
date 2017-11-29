@@ -34,6 +34,7 @@ public class DataPoints extends AppCompatActivity {
 
     private Button addButton;
     private Button graphButton;
+    private Button QRButton;
     private TextView XTitle;
     private TextView YTitle;
     private TextView ZTitle;
@@ -62,6 +63,7 @@ public class DataPoints extends AppCompatActivity {
 
     addButton = findViewById(R.id.addButton);
     graphButton = findViewById(R.id.graphButton);
+    QRButton = findViewById(R.id.QRButton);
     XTitle = findViewById(R.id.XAxisTitle);
     YTitle = findViewById(R.id.YAxisTitle);
     ZTitle = findViewById(R.id.ZAxisTitle);
@@ -262,6 +264,15 @@ public class DataPoints extends AppCompatActivity {
                 // Add the request to the RequestQueue.
                 queue.add(stringRequest);
                 queue.start();
+
+            }
+        });
+
+        QRButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                //TODO: QR code functionality
 
             }
         });
