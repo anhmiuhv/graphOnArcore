@@ -260,7 +260,6 @@ public class DataPoints extends AppCompatActivity {
 
                     @Override
                     public void onResponse(String response) {
-                        //TODO: get the url from server, start new activity with webView with given url
                         Log.i("VOLLEY RESPONSE: ", response);
 
                         Intent intent = new Intent(DataPoints.this, Graph.class);
@@ -288,6 +287,7 @@ public class DataPoints extends AppCompatActivity {
                     public byte[] getBody() throws AuthFailureError {
 
                         String your_string_json = json.toString(); // put your json
+                        Log.i("JSON your_string_json: ", your_string_json);
                         return your_string_json.getBytes();
                     }
                 };
