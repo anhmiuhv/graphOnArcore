@@ -2,6 +2,7 @@ package com.example.linh.graphonarcore;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.provider.ContactsContract;
 import android.support.design.widget.TextInputEditText;
@@ -9,6 +10,8 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -53,7 +56,11 @@ public class DataPoints extends AppCompatActivity {
     private String XAxisTitle, YAxisTitle, ZAxisTitle;
     private String XUnit, YUnit, ZUnit;
     JSONObject json;
+    private int screenWidth;
+    private int screenHeight;
     private int rowCounter;
+
+    private final int deleteButtonWidth = 350;
 
     //removes the table row that the delete button is in from the table layout
     View.OnClickListener deleteButtonListener = new View.OnClickListener() {
@@ -66,24 +73,38 @@ public class DataPoints extends AppCompatActivity {
     //initialize the variables
     private void init() {
 
-    addButton = findViewById(R.id.addButton);
-    graphButton = findViewById(R.id.graphButton);
-    QRButton = findViewById(R.id.QRButton);
-    XTitle = findViewById(R.id.XAxisTitle);
-    YTitle = findViewById(R.id.YAxisTitle);
-    ZTitle = findViewById(R.id.ZAxisTitle);
-    xLayout = findViewById(R.id.xPointLayout);
-    yLayout = findViewById(R.id.yPointLayout);
-    zLayout = findViewById(R.id.zPointLayout);
-    xPoint = findViewById(R.id.xPoint);
-    yPoint = findViewById(R.id.yPoint);
-    zPoint = findViewById(R.id.zPoint);
-    table = findViewById(R.id.table);
-    xArray = new ArrayList<>();
-    yArray = new ArrayList<>();
-    zArray = new ArrayList<>();
-    json = new JSONObject();
-    rowCounter = 1;
+        screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
+        screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
+        addButton = findViewById(R.id.addButton);
+        graphButton = findViewById(R.id.graphButton);
+        QRButton = findViewById(R.id.QRButton);
+        XTitle = findViewById(R.id.XAxisTitle);
+        XTitle.setMaxWidth((screenWidth - deleteButtonWidth) / 3);
+        XTitle.setMinWidth((screenWidth - deleteButtonWidth) / 3);
+        XTitle.setMaxLines(1);
+        XTitle.setEllipsize(TextUtils.TruncateAt.END);
+        YTitle = findViewById(R.id.YAxisTitle);
+        YTitle.setMaxWidth((screenWidth - deleteButtonWidth) / 3);
+        YTitle.setMinWidth((screenWidth - deleteButtonWidth) / 3);
+        YTitle.setMaxLines(1);
+        YTitle.setEllipsize(TextUtils.TruncateAt.END);
+        ZTitle = findViewById(R.id.ZAxisTitle);
+        ZTitle.setMaxWidth((screenWidth - 400) / 3);
+        ZTitle.setMinWidth((screenWidth - 400) / 3);
+        ZTitle.setMaxLines(1);
+        ZTitle.setEllipsize(TextUtils.TruncateAt.END);
+        xLayout = findViewById(R.id.xPointLayout);
+        yLayout = findViewById(R.id.yPointLayout);
+        zLayout = findViewById(R.id.zPointLayout);
+        xPoint = findViewById(R.id.xPoint);
+        yPoint = findViewById(R.id.yPoint);
+        zPoint = findViewById(R.id.zPoint);
+        table = findViewById(R.id.table);
+        xArray = new ArrayList<>();
+        yArray = new ArrayList<>();
+        zArray = new ArrayList<>();
+        json = new JSONObject();
+        rowCounter = 1;
 
     }
 
@@ -139,7 +160,7 @@ public class DataPoints extends AppCompatActivity {
                     TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(
                             TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
 
-                    layoutParams.setMargins(20, 5, 50, 5);
+                    layoutParams.setMargins(40, 5, 50, 5);
 
                     //create x point
                     TextView x = new TextView(DataPoints.this);
@@ -147,6 +168,10 @@ public class DataPoints extends AppCompatActivity {
                     x.setTextColor(ContextCompat.getColor(DataPoints.this, R.color.colorWhite));
                     x.setTextSize(18);
                     x.setLayoutParams(layoutParams);
+                    x.setMaxWidth((screenWidth - 900) / 3);
+                    x.setMinWidth((screenWidth - 900) / 3);
+                    x.setMaxLines(1);
+                    x.setEllipsize(TextUtils.TruncateAt.END);
 
                     //create y point
                     TextView y = new TextView(DataPoints.this);
@@ -154,6 +179,10 @@ public class DataPoints extends AppCompatActivity {
                     y.setTextColor(ContextCompat.getColor(DataPoints.this, R.color.colorWhite));
                     y.setTextSize(18);
                     y.setLayoutParams(layoutParams);
+                    y.setMaxWidth((screenWidth - 900) / 3);
+                    y.setMinWidth((screenWidth - 900) / 3);
+                    y.setMaxLines(1);
+                    y.setEllipsize(TextUtils.TruncateAt.END);
 
                     //create z point
                     TextView z = new TextView(DataPoints.this);
@@ -161,6 +190,10 @@ public class DataPoints extends AppCompatActivity {
                     z.setTextColor(ContextCompat.getColor(DataPoints.this, R.color.colorWhite));
                     z.setTextSize(18);
                     z.setLayoutParams(layoutParams);
+                    z.setMaxWidth((screenWidth - 900) / 3);
+                    z.setMinWidth((screenWidth - 900) / 3);
+                    z.setMaxLines(1);
+                    z.setEllipsize(TextUtils.TruncateAt.END);
 
                     //create delete button
                     Button deleteButton = new Button(DataPoints.this);
@@ -328,5 +361,15 @@ public class DataPoints extends AppCompatActivity {
             editLayout.setError(error);
             return true;
         }
+    }
+
+    //converts pixels to dp
+    public int pixelToDp(int px) {
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        float logicalDensity = metrics.density;
+
+        return (int) Math.ceil(px / logicalDensity);
     }
 }
