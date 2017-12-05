@@ -1,6 +1,9 @@
 package com.example.linh.graphonarcore;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.PorterDuff;
@@ -14,8 +17,11 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -35,6 +41,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DataPoints extends AppCompatActivity {
 
@@ -58,6 +65,7 @@ public class DataPoints extends AppCompatActivity {
     JSONObject json;
     private int screenWidth;
     private int screenHeight;
+    private boolean graphARCORE;
     private int rowCounter;
 
     private final int deleteButtonWidth = 350;
@@ -104,6 +112,7 @@ public class DataPoints extends AppCompatActivity {
         yArray = new ArrayList<>();
         zArray = new ArrayList<>();
         json = new JSONObject();
+        graphARCORE = true;
         rowCounter = 1;
 
     }
@@ -267,13 +276,13 @@ public class DataPoints extends AppCompatActivity {
 
                     for(int i = 0; i < xArray.size(); i++) {
 
-                    JSONObject point = new JSONObject();
+                        JSONObject point = new JSONObject();
 
-                    point.put("x", xArray.get(i));
-                    point.put("y", yArray.get(i));
-                    point.put("z", zArray.get(i));
+                        point.put("x", xArray.get(i));
+                        point.put("y", yArray.get(i));
+                        point.put("z", zArray.get(i));
 
-                    points.put(point);
+                        points.put(point);
 
                     }
 
@@ -285,55 +294,76 @@ public class DataPoints extends AppCompatActivity {
                     Log.i("JSON ERROR: ", e.getMessage());
                 }
 
-                // Instantiate the RequestQueue.
-                RequestQueue queue = Volley.newRequestQueue(DataPoints.this);
-                String url ="http://argraph.herokuapp.com/api";
+                //pop up to choose graph mode
+                final AlertDialog.Builder alt_bld = new AlertDialog.Builder(DataPoints.this);
 
-                // Request a string response from the provided URL.
-                JsonObjectRequest stringRequest = new JsonObjectRequest(url,json, new Response.Listener<JSONObject>() {
+                final String[] graphs = {"ARCore", "Three.js"};
 
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.i("VOLLEY RESPONSE: ", response.toString());
+                alt_bld.setTitle("Select a Graphing Mode");
+                alt_bld.setSingleChoiceItems(graphs, -1, new DialogInterface
+                        .OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
 
-                        try {
-                            Intent intent = ArcoreIntentFactory.getIntent(DataPoints.this, response.getString("url"));
-                            startActivity(intent);
+                        //if item is 1, three.js was selected
+                        graphARCORE = item != 1;
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        dialog.dismiss();
+
+                        // Instantiate the RequestQueue.
+                        RequestQueue queue = Volley.newRequestQueue(DataPoints.this);
+                        String url = graphARCORE ? "http://argraph.herokuapp.com/api" : "http://argraph.herokuapp.com/api";
+
+                        // Request a string response from the provided URL.
+                        JsonObjectRequest stringRequest = new JsonObjectRequest(url,json, new Response.Listener<JSONObject>() {
+
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Log.i("VOLLEY RESPONSE: ", response.toString());
+
+                                try {
+                                    Intent intent = ArcoreIntentFactory.getIntent(DataPoints.this, response.getString("url"));
+                                    startActivity(intent);
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                        }, new Response.ErrorListener() {
+
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                if (error.getMessage() == null) return;
+                                Log.i("VOLLEY ERROR: ", error.getMessage());
+
+                                Context context = getApplicationContext();
+                                CharSequence text = error.getMessage();
+                                int duration = Toast.LENGTH_LONG;
+
+                                Toast toast = Toast.makeText(context, text, duration);
+                                toast.show();
+                            }
+
+                        }) {
+
+                            @Override
+                            public byte[] getBody() {
+
+                                String your_string_json = json.toString(); // put your json
+                                Log.i("JSON your_string_json: ", your_string_json);
+                                return your_string_json.getBytes();
+                            }
+                        };
+
+                        // Add the request to the RequestQueue.
+                        queue.add(stringRequest);
+                        queue.start();
+
                     }
+                });
 
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        if (error.getMessage() == null) return;
-                        Log.i("VOLLEY ERROR: ", error.getMessage());
-
-                        Context context = getApplicationContext();
-                        CharSequence text = error.getMessage();
-                        int duration = Toast.LENGTH_LONG;
-
-                        Toast toast = Toast.makeText(context, text, duration);
-                        toast.show();
-                    }
-
-                }) {
-
-                    @Override
-                    public byte[] getBody() {
-
-                        String your_string_json = json.toString(); // put your json
-                        Log.i("JSON your_string_json: ", your_string_json);
-                        return your_string_json.getBytes();
-                    }
-                };
-
-                // Add the request to the RequestQueue.
-                queue.add(stringRequest);
-                queue.start();
+                AlertDialog alert = alt_bld.create();
+                alert.show();
 
             }
         });
