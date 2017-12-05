@@ -49,6 +49,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:textColorHint="@color/colorWhite"
                     app:errorEnabled="true"
                     app:errorTextAppearance="@style/error_appearance">
 
@@ -57,11 +58,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
+                        android:backgroundTint="@color/colorWhite"
+                        android:drawableTint="@color/colorWhite"
                         android:fontFamily="sans-serif"
+                        android:foregroundTint="@color/colorWhite"
                         android:hint="X"
                         android:inputType="numberSigned|numberDecimal"
                         android:maxLines="1"
-                        android:textColor="@color/colorSecondary0" />
+                        android:textColor="@color/colorSecondary0"
+                        android:textColorHint="@color/colorWhite" />
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
@@ -69,6 +74,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:textColorHint="@color/colorWhite"
                     app:errorEnabled="true"
                     app:errorTextAppearance="@style/error_appearance">
 
@@ -76,11 +82,15 @@
                         android:id="@+id/yPoint"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:backgroundTint="@color/colorWhite"
+                        android:drawableTint="@color/colorWhite"
                         android:fontFamily="sans-serif"
+                        android:foregroundTint="@color/colorWhite"
                         android:hint="Y"
                         android:inputType="number|numberSigned|numberDecimal"
                         android:maxLines="1"
-                        android:textColor="@color/colorSecondary0" />
+                        android:textColor="@color/colorSecondary0"
+                        android:textColorHint="@color/colorWhite" />
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
@@ -88,6 +98,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:textColorHint="@color/colorWhite"
                     app:errorEnabled="true"
                     app:errorTextAppearance="@style/error_appearance">
 
@@ -96,11 +107,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
+                        android:backgroundTint="@color/colorWhite"
+                        android:drawableTint="@color/colorWhite"
                         android:fontFamily="sans-serif"
+                        android:foregroundTint="@color/colorWhite"
                         android:hint="Z"
                         android:inputType="number|numberSigned|numberDecimal"
                         android:maxLines="1"
-                        android:textColor="@color/colorSecondary0" />
+                        android:textColor="@color/colorSecondary0"
+                        android:textColorHint="@color/colorWhite" />
                 </android.support.design.widget.TextInputLayout>
 
             </LinearLayout>
