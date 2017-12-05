@@ -1,13 +1,10 @@
 package com.example.linh.graphonarcore;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.PorterDuff;
-import android.provider.ContactsContract;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
@@ -16,24 +13,19 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
-import android.view.Window;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -41,7 +33,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class DataPoints extends AppCompatActivity {
 
@@ -310,7 +301,7 @@ public class DataPoints extends AppCompatActivity {
                         dialog.dismiss();
 
                         // Instantiate the RequestQueue.
-                        RequestQueue queue = Volley.newRequestQueue(DataPoints.this);
+                        final RequestQueue queue = Volley.newRequestQueue(DataPoints.this);
                         String url = graphARCORE ? "http://argraph.herokuapp.com/api" : "http://argraph.herokuapp.com/api/nonar";
 
                         // Request a string response from the provided URL.
@@ -337,11 +328,13 @@ public class DataPoints extends AppCompatActivity {
                                 Log.i("VOLLEY ERROR: ", error.getMessage());
 
                                 Context context = getApplicationContext();
-                                CharSequence text = error.getMessage();
+                                CharSequence text = "Interrupted Thread. Retrying...";
                                 int duration = Toast.LENGTH_LONG;
 
                                 Toast toast = Toast.makeText(context, text, duration);
                                 toast.show();
+
+                                queue.start();
                             }
 
                         }) {
@@ -375,6 +368,15 @@ public class DataPoints extends AppCompatActivity {
                 Intent intent = new Intent(DataPoints.this, QRScanActivity.class);
                 startActivity(intent);
 
+            }
+        });
+
+        zPoint.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    addButton.performClick();
+                }
+                return false;
             }
         });
     }

@@ -65,6 +65,9 @@
                         android:hint="X"
                         android:inputType="numberSigned|numberDecimal"
                         android:maxLines="1"
+                        android:nextFocusDown="@id/yPoint"
+                        android:nextFocusForward="@id/yPoint"
+                        android:nextFocusRight="@id/yPoint"
                         android:textColor="@color/colorSecondary0"
                         android:textColorHint="@color/colorWhite" />
                 </android.support.design.widget.TextInputLayout>
@@ -89,6 +92,9 @@
                         android:hint="Y"
                         android:inputType="number|numberSigned|numberDecimal"
                         android:maxLines="1"
+                        android:nextFocusDown="@id/zPoint"
+                        android:nextFocusForward="@id/zPoint"
+                        android:nextFocusRight="@id/zPoint"
                         android:textColor="@color/colorSecondary0"
                         android:textColorHint="@color/colorWhite" />
                 </android.support.design.widget.TextInputLayout>
