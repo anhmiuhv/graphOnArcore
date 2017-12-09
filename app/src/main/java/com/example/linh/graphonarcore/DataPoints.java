@@ -328,13 +328,12 @@ public class DataPoints extends AppCompatActivity {
                                 Log.i("VOLLEY ERROR: ", error.getMessage());
 
                                 Context context = getApplicationContext();
-                                CharSequence text = "Interrupted Thread. Retrying...";
+                                CharSequence text = "Interrupted Thread. Please try again.";
                                 int duration = Toast.LENGTH_LONG;
 
                                 Toast toast = Toast.makeText(context, text, duration);
                                 toast.show();
 
-                                queue.start();
                             }
 
                         }) {
@@ -350,7 +349,6 @@ public class DataPoints extends AppCompatActivity {
 
                         // Add the request to the RequestQueue.
                         queue.add(stringRequest);
-                        queue.start();
 
                     }
                 });
