@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Virtual Grapher</string>
+    <string name="app_name">ARGraph</string>
     <string name="next">Next</string>
     <string name="x_axis">X Axis</string>
     <string name="y_axis">Y Axis</string>
