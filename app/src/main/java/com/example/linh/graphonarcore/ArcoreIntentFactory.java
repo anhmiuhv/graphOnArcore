@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.widget.Toast;
 
 import java.net.URI;
 
@@ -16,6 +17,7 @@ public class ArcoreIntentFactory {
                 return intent.setData(Uri.parse(url));
             }
         }
+        Toast.makeText(activity, "No WebARonArcore. Fall back to default browser", Toast.LENGTH_LONG).show();
         String idStr = url.substring(url.lastIndexOf('/') + 1);
         url = "https://argraph.herokuapp.com/nonar/" + idStr;
 

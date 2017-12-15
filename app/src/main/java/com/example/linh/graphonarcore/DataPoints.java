@@ -303,6 +303,7 @@ public class DataPoints extends AppCompatActivity {
                         // Instantiate the RequestQueue.
                         final RequestQueue queue = Volley.newRequestQueue(DataPoints.this);
                         String url = graphARCORE ? "http://argraph.herokuapp.com/api" : "http://argraph.herokuapp.com/api/nonar";
+                        Toast.makeText(DataPoints.this, "Loading", Toast.LENGTH_LONG).show();
 
                         // Request a string response from the provided URL.
                         JsonObjectRequest stringRequest = new JsonObjectRequest(url,json, new Response.Listener<JSONObject>() {
