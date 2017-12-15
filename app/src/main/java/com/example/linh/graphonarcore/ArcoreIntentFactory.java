@@ -18,7 +18,10 @@ public class ArcoreIntentFactory {
         }
         String idStr = url.substring(url.lastIndexOf('/') + 1);
         url = "https://argraph.herokuapp.com/nonar/" + idStr;
-        return new Intent(activity, Graph.class).putExtra("URL", url);
+
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(url));
+        return i;
 
     }
 

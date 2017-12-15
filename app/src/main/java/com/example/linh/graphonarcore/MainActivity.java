@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import org.opencv.android.OpenCVLoader;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,14 +50,6 @@ public class MainActivity extends AppCompatActivity {
         }
     });
 
-    }
-
-    static {
-        if (OpenCVLoader.initDebug()) {
-            Log.i("Tag", "OpenCV initialize success");
-        } else {
-            Log.i("tage", "OpenCV initialize failed");
-        }
     }
 
     @Override
